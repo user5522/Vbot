@@ -2,7 +2,6 @@
 
 I'm going to rewrite this from scratch in discord.js tbh lol
 
-
 ## Reminder to self because i forget
 .env must have:
 
