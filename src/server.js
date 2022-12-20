@@ -2,7 +2,6 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ChannelType,
-  Message,
 } = require("discord.js");
 
 module.exports = {
