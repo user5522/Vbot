@@ -5,19 +5,20 @@ module.exports = {
     .setName("ping")
     .setDescription('returns "pong!"'),
   async execute(interaction) {
-    let totalSeconds = interaction.client.uptime / 1000;
-    let days = Math.floor(totalSeconds / 86400);
-    totalSeconds %= 86400;
-    let hours = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    let minutes = Math.floor(totalSeconds / 60);
-    let seconds = Math.floor(totalSeconds % 60);
+    try {
+      const startTime = interaction.client.readyAt;
+      const currentTime = new Date();
+      const elapsedTime = (currentTime - startTime) / 1000;
 
-    let uptime = `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`;
-
-    await interaction.reply(`
-      > WebSocket ping: ${interaction.client.ws.ping}ms.
-      > Uptime: ${uptime}
+      await interaction.channel.send(`
+        > WebSocket ping: ${interaction.client.ws.ping}ms
+        > Up time: ${elapsedTime}s
       `);
+    } catch (error) {
+      await interaction.channel.send(
+        "An error occurred while executing the command."
+      );
+      console.error(error);
+    }
   },
 };
