@@ -107,9 +107,25 @@ module.exports = {
       case "icon": {
         let embed;
         embed = new EmbedBuilder()
-          .setTitle(`${guildName} - Server Icon`)
           .setColor("#000000")
-          .setImage(guild.iconURL({ dynamic: true }));
+          .setAuthor({
+            name: `${guildName} - Server Icon`,
+            iconURL: guild.iconURL({ dynamic: true }),
+          })
+          .setDescription(
+            `\*\*Download: [[x2048](${guild.iconURL({
+              size: 2048,
+              format: "png",
+              dynamic: true,
+            })}) | [x4096](${guild.iconURL({
+              size: 4096,
+              format: "png",
+              dynamic: true,
+            })})]\*\*`
+          )
+          .setImage(
+            guild.iconURL({ size: 2048, format: "png", dynamic: true })
+          );
 
         await interaction.reply({ embeds: [embed] });
         break;
