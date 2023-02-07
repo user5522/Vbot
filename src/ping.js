@@ -10,14 +10,12 @@ module.exports = {
       const currentTime = new Date();
       const elapsedTime = (currentTime - startTime) / 1000;
 
-      await interaction.channel.send(`
+      await interaction.reply(`
         > WebSocket ping: ${interaction.client.ws.ping}ms
         > Up time: ${elapsedTime}s
       `);
     } catch (error) {
-      await interaction.channel.send(
-        "An error occurred while executing the command."
-      );
+      await interaction.reply("An error occurred while executing the command.");
       console.error(error);
     }
   },
