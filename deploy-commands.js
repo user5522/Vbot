@@ -5,7 +5,7 @@ const { SlashCommandBuilder, Routes } = require("discord.js");
 const { REST } = require("@discordjs/rest");
 
 const commands = [];
-const commandsPath = path.join(__dirname, "src");
+const commandsPath = path.join(__dirname, "src/modules");
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js"));

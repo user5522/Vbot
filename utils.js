@@ -21,7 +21,7 @@ exports.registerEvents = (client) => {
 
 exports.registerCommands = (client) => {
   client.commands = new Collection();
-  const commandsPath = path.join(__dirname, "src");
+  const commandsPath = path.join(__dirname, "src/modules");
   const commandFiles = fs
     .readdirSync(commandsPath)
     .filter((file) => file.endsWith(".js"));
