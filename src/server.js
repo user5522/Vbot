@@ -75,7 +75,7 @@ module.exports = {
               inline: true,
             }
           );
-        await interaction.channel.send({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
         break;
       }
       case "icon": {
@@ -85,11 +85,11 @@ module.exports = {
           .setColor("#000000")
           .setImage(guild.iconURL({ dynamic: true }));
 
-        await interaction.channel.send({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
         break;
       }
       default: {
-        await interaction.channel.send(
+        await interaction.reply(
           "Invalid subcommand. Use `/server info` or `/server icon`."
         );
       }
