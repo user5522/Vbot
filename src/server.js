@@ -32,16 +32,18 @@ module.exports = {
         const roleCount = getRoleCount(guild);
 
         const embed = new EmbedBuilder()
-          .setTitle(`${guildName} - Server Info`)
           .setColor("#000000")
-          .setThumbnail(guild.iconURL({ dynamic: true }))
+          .setAuthor({
+            name: `${guildName} - Server Info`,
+            iconURL: guild.iconURL({ dynamic: true }),
+          })
           .addFields(
-            { name: "Server ID", value: `${guildID}`, inline: true },
+            { name: "ID", value: `${guildID}`, inline: true },
             { name: "Owner", value: `${guildOwner}`, inline: true },
             {
-              name: "Server Creation Date",
-              value: `<t:${guildCreationDate}>`,
-              inline: true,
+              name: "Creation Date",
+              value: `<t:${guildCreationDate}> \*\*| \*\* <t:${guildCreationDate}:R>`,
+              inline: false,
             },
             {
               name: `Member Count - ${memberCount.total}`,
@@ -54,27 +56,51 @@ module.exports = {
             {
               name: `Channels - ${channelCount.total}`,
               value: `
+              Categories: ${channelCount.category}
               Text: ${channelCount.text}
-              Voice: ${channelCount.voice}
-              `,
+              Voice: ${channelCount.voice}${
+                isCommunity
+                  ? `${
+                      channelCount.announcement > 0
+                        ? `\nAnnouncement: ${channelCount.announcement}`
+                        : ``
+                    }${
+                      channelCount.stage > 0
+                        ? `\nStage: ${channelCount.stage}`
+                        : ``
+                    }${
+                      channelCount.forum > 0
+                        ? `\nForum: ${channelCount.forum}`
+                        : ``
+                    }${
+                      channelCount.directory > 0
+                        ? `\nDirectory: ${channelCount.directory}`
+                        : ``
+                    }`
+                  : ``
+              }`,
               inline: true,
             },
             {
               name: `Roles - ${roleCount}`,
               value: `${getRoleList(guild).join(", ")}`,
-              inline: true,
-            },
+              inline: false,
+            }
+          );
+        if (guild.premiumSubscriptionCount > 0) {
+          embed.addFields(
             {
-              name: `Total Server Boosts`,
+              name: `Total Boosts`,
               value: `${guild.premiumSubscriptionCount}`,
               inline: true,
             },
             {
-              name: `Server Boost Tier`,
+              name: `Boost Tier`,
               value: `${guild.premiumTier}/3`,
               inline: true,
             }
           );
+        }
         await interaction.reply({ embeds: [embed] });
         break;
       }
@@ -105,16 +131,39 @@ function getMemberCount(guild) {
   };
 }
 
+function isCommunity(guild) {
+  return guild.features?.includes("COMMUNITY");
+}
+
 function getChannelCount(guild) {
   return {
     total: guild.channels.cache.filter(
       (c) =>
-        c.type === ChannelType.GuildText || c.type === ChannelType.GuildVoice
+        c.type === ChannelType.GuildText ||
+        c.type === ChannelType.GuildVoice ||
+        c.type === ChannelType.GuildStageVoice ||
+        c.type === ChannelType.GuildAnnouncement ||
+        c.type === ChannelType.GuildDirectory ||
+        c.type === ChannelType.GuildForum
     ).size,
     text: guild.channels.cache.filter((c) => c.type === ChannelType.GuildText)
       .size,
     voice: guild.channels.cache.filter((c) => c.type === ChannelType.GuildVoice)
       .size,
+    stage: guild.channels.cache.filter(
+      (c) => c.type === ChannelType.GuildStageVoice
+    ).size,
+    announcement: guild.channels.cache.filter(
+      (c) => c.type === ChannelType.GuildAnnouncement
+    ).size,
+    category: guild.channels.cache.filter(
+      (c) => c.type === ChannelType.GuildCategory
+    ).size,
+    forum: guild.channels.cache.filter((c) => c.type === ChannelType.GuildForum)
+      .size,
+    directory: guild.channels.cache.filter(
+      (c) => c.type === ChannelType.GuildDirectory
+    ).size,
   };
 }
 
