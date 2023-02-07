@@ -19,7 +19,7 @@
   "homepage": "https://github.com/user5522/Vbot#readme",
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
-    "discord.js": "^14.3.0",
-    "dotenv": "^16.0.2"
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3"
   }
 }
