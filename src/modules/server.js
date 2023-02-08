@@ -3,6 +3,7 @@ const {
   EmbedBuilder,
   ChannelType,
 } = require("discord.js");
+const emojis = require("../lib/emojis");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -30,6 +31,7 @@ module.exports = {
         const memberCount = getMemberCount(guild);
         const channelCount = getChannelCount(guild);
         const roleCount = getRoleCount(guild);
+        const emojiInfo = getEmojis(guild);
 
         const embed = new EmbedBuilder()
           .setColor("#000000")
@@ -41,36 +43,28 @@ module.exports = {
             { name: "ID", value: `${guildID}`, inline: true },
             { name: "Owner", value: `${guildOwner}`, inline: true },
             {
-              name: "Creation Date",
+              name: "Creation date",
               value: `<t:${guildCreationDate}> \*\*| \*\* <t:${guildCreationDate}:R>`,
               inline: false,
             },
             {
-              name: `Member Count - ${memberCount.total}`,
-              value: `
-              Members: ${memberCount.members}
-              Bots: ${memberCount.bots}
-              `,
-              inline: true,
-            },
-            {
               name: `Channels - ${channelCount.total}`,
               value: `
-              Categories: ${channelCount.category}
-              Text: ${channelCount.text}
-              Voice: ${channelCount.voice}${
+              ${emojis.CATEGORY} Categories: ${channelCount.category}
+              ${emojis.TEXT_CHANNEL} Text: ${channelCount.text}
+              ${emojis.VOICE_CHANNEL} Voice: ${channelCount.voice}${
                 isCommunity
                   ? `${
                       channelCount.announcement > 0
-                        ? `\nAnnouncement: ${channelCount.announcement}`
+                        ? `\n ${emojis.ANNOUNCEMENT_CHANNEL} Announcement: ${channelCount.announcement}`
                         : ``
                     }${
                       channelCount.stage > 0
-                        ? `\nStage: ${channelCount.stage}`
+                        ? `\n ${emojis.STAGE_CHANNEL} Stage: ${channelCount.stage}`
                         : ``
                     }${
                       channelCount.forum > 0
-                        ? `\nForum: ${channelCount.forum}`
+                        ? `\n ${emojis.FORUM_CHANNEL}Forum: ${channelCount.forum}`
                         : ``
                     }${
                       channelCount.directory > 0
@@ -82,8 +76,26 @@ module.exports = {
               inline: true,
             },
             {
+              name: `Emojis - ${emojiInfo.total}`,
+              value: `
+              Static: ${emojiInfo.static}
+              Animated: ${emojiInfo.animated}
+
+              ${emojiInfo.preview}
+              `,
+              inline: true,
+            },
+            {
+              name: `Members - ${memberCount.total}`,
+              value: `
+              ${emojis.MEMBERS} Members: ${memberCount.members}
+              ${emojis.BOTS} Bots: ${memberCount.bots}
+              `,
+              inline: true,
+            },
+            {
               name: `Roles - ${roleCount}`,
-              value: `${getRoleList(guild).join(", ")}`,
+              value: `${getRoleList(guild)}`,
               inline: false,
             }
           );
@@ -101,7 +113,9 @@ module.exports = {
             }
           );
         }
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({
+          embeds: [embed],
+        });
         break;
       }
       case "icon": {
@@ -127,7 +141,9 @@ module.exports = {
             guild.iconURL({ size: 2048, format: "png", dynamic: true })
           );
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({
+          embeds: [embed],
+        });
         break;
       }
       default: {
@@ -139,11 +155,34 @@ module.exports = {
   },
 };
 
+function getEmojis(guild) {
+  let counter = 0;
+  let preview = "";
+
+  guild.emojis.cache.forEach((e) => {
+    preview += e.toString();
+    counter++;
+    if (counter % 5 === 0) {
+      preview += "\n";
+    } else {
+      preview += " ";
+    }
+  });
+
+  return {
+    total: guild.emojis.cache.size,
+    static: guild.emojis.cache.filter((e) => !e.animated).size,
+    animated: guild.emojis.cache.filter((e) => e.animated).size,
+    preview: preview,
+  };
+}
+
 function getMemberCount(guild) {
   return {
     total: guild.memberCount,
-    members: guild.members.cache.filter((member) => !member.user.bot).size,
-    bots: guild.members.cache.filter((member) => member.user.bot).size,
+    members:
+      guild.memberCount - guild.members.cache.filter((m) => m.user.bot).size,
+    bots: guild.members.cache.filter((m) => m.user.bot).size,
   };
 }
 
@@ -190,5 +229,6 @@ function getRoleCount(guild) {
 function getRoleList(guild) {
   return guild.roles.cache
     .sort((a, b) => b.position - a.position)
-    .map((r) => r);
+    .map((r) => r)
+    .join(" ");
 }
