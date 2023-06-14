@@ -7,4 +7,5 @@ module.exports = {
   CATEGORY: "<:category:1072947532415647854>",
   STAGE_CHANNEL: "<:stage_channel:1072948149875900577>",
   BOTS: "<:bots:1072969509616484382>",
+  ROLE: "<:role:1118601389770276965>",
 };
