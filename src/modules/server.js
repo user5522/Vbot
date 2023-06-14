@@ -49,10 +49,11 @@ module.exports = {
             },
             {
               name: `Channels - ${channelCount.total}`,
-              value: `
-              ${emojis.CATEGORY} Categories: ${channelCount.category}
-              ${emojis.TEXT_CHANNEL} Text: ${channelCount.text}
-              ${emojis.VOICE_CHANNEL} Voice: ${channelCount.voice}${
+              value: `${emojis.CATEGORY} Categories: ${
+                channelCount.category
+              } \n${emojis.TEXT_CHANNEL} Text: ${channelCount.text} \n${
+                emojis.VOICE_CHANNEL
+              } Voice: ${channelCount.voice} \n${
                 isCommunity
                   ? `${
                       channelCount.announcement > 0
@@ -78,18 +79,15 @@ module.exports = {
             {
               name: `Emojis - ${emojiInfo.total}`,
               value: `
-              Static: ${emojiInfo.static}
-              Animated: ${emojiInfo.animated}
-
-              ${emojiInfo.preview}
+              Static: ${emojiInfo.static} \nAnimated: ${emojiInfo.animated}
+              \n${emojiInfo.preview}
               `,
               inline: true,
             },
             {
               name: `Members - ${memberCount.total}`,
               value: `
-              ${emojis.MEMBERS} Members: ${memberCount.members}
-              ${emojis.BOTS} Bots: ${memberCount.bots}
+              ${emojis.MEMBERS} Members: ${memberCount.members} \n${emojis.BOTS} Bots: ${memberCount.bots}
               `,
               inline: true,
             },
